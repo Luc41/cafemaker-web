@@ -38,12 +38,12 @@ class ElasticMapping
 
     const STRING = [
         'type' => 'text',
-        'analyzer' => 'custom_string_search_basic'
+        'analyzer' => 'smartcn'
     ];
 
     const ITEM_STRING = [
         'type' => 'text',
-        'analyzer' => 'custom_string_search_basic',
+        'analyzer' => 'smartcn',
         'fields' => [
             'raw' => [
                 'type' => 'keyword',
@@ -70,6 +70,7 @@ class ElasticMapping
     const TEXT = [
         'type' => 'text',
         'index' => true,
+        'analyzer' => 'smartcn',
         'fields' => [
             'raw' => [
                 'type' => 'keyword',
