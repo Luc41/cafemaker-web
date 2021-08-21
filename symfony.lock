@@ -246,7 +246,7 @@
         "version": "1.10.0"
     },
     "symfony/asset": {
-        "version": "v4.1.2"
+        "version": "v5.2.12"
     },
     "symfony/browser-kit": {
         "version": "v4.1.4"
@@ -451,6 +451,28 @@
             "version": "3.3",
             "ref": "c72d107d077f1654428edaed69415d0228c1aefe"
         }
+    },
+    "symfony/webpack-encore-bundle": {
+        "version": "1.9",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.9",
+            "ref": "5ff15d211e3d4a9216218f6b7f1572262efd74e2"
+        },
+        "files": [
+            "assets/app.js",
+            "assets/bootstrap.js",
+            "assets/controllers.json",
+            "assets/controllers/hello_controller.js",
+            "assets/styles/app.css",
+            "config/packages/assets.yaml",
+            "config/packages/prod/webpack_encore.yaml",
+            "config/packages/test/webpack_encore.yaml",
+            "config/packages/webpack_encore.yaml",
+            "package.json",
+            "webpack.config.js"
+        ]
     },
     "symfony/webpack-encore-pack": {
         "version": "1.0",
