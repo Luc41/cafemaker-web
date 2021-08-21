@@ -21,7 +21,7 @@ class ElasticSearch
             return;
         }
 
-        [$ip, $port, $login, $password] = explode(',', getenv($environment));
+        @[$ip, $port, $login, $password] = explode(',', getenv($environment));
 
         if (!$ip || !$port) {
             throw new \Exception('No ElasticSearch IP or PORT configured in env file');
