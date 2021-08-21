@@ -135,16 +135,16 @@ class ApiRequest
             throw new ApiPermaBanException();
         }
         
-        file_put_contents(
-            __DIR__.'/../../../../api_logs.txt',
-            implode("|", [
-                date('Y-m-d H:i:s'),
-                $this->request->attributes->get('_controller'),
-                $this->apikey ? "1" : "0",
-                ApiRequest::$idStatic
-            ]) . "\n",
-            FILE_APPEND
-        );
+        // file_put_contents(
+        //     __DIR__.'/../../../../api_logs.txt',
+        //     implode("|", [
+        //         date('Y-m-d H:i:s'),
+        //         $this->request->attributes->get('_controller'),
+        //         $this->apikey ? "1" : "0",
+        //         ApiRequest::$idStatic
+        //     ]) . "\n",
+        //     FILE_APPEND
+        // );
 
         // if this request is not against an API controller, we don't need to do anything.
         if ($this->isApiController() === false) {
