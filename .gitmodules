@@ -1,3 +1,0 @@
-[submodule "src/Common"]
-	path = src/Common
-	url = https://github.com/thewakingsands/cafemaker-common-php.git
