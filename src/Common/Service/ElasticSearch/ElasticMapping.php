@@ -11,32 +11,17 @@ class ElasticMapping
 {
     const ANALYSIS = [
         'filter' => [
-            "word_joiner" => [
-                "type" => "word_delimiter",
-                "catenate_all" => true
-            ]
         ],
         'analyzer' => [
-            // this allows: "mothermi" for: mother miounne but not "mother mi"
-            'custom_string_search_concat' => [
-                'type'      => 'custom',
-                'tokenizer' => 'keyword',
-                'filter'    => [
-                    'lowercase',
-                    'word_joiner'
-                ]
-            ],
-            'custom_string_search_basic' => [
-                'type'      => 'custom',
-                'tokenizer' => 'keyword',
-                'filter'    => [
-                    'lowercase',
-                ]
-            ]
         ]
     ];
 
     const STRING = [
+        'type' => 'text',
+        'analyzer' => 'smartcn'
+    ];
+
+    const CHINESE = [
         'type' => 'text',
         'analyzer' => 'smartcn'
     ];
@@ -69,8 +54,8 @@ class ElasticMapping
 
     const TEXT = [
         'type' => 'text',
-        'index' => true,
         'analyzer' => 'smartcn',
+        'index' => true,
         'fields' => [
             'raw' => [
                 'type' => 'keyword',

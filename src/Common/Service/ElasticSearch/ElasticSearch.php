@@ -57,7 +57,6 @@ class ElasticSearch
             'index' => $index,
             'body'  => [
                 'settings' => [
-                    'analysis'                         => ElasticMapping::ANALYSIS,
                     'number_of_shards'                 => self::NUMBER_OF_SHARDS,
                     'number_of_replicas'               => self::NUMBER_OF_REPLICAS,
                     'max_result_window'                => self::MAX_RESULT_WINDOW,
@@ -68,6 +67,13 @@ class ElasticSearch
                         '_source'           => ['enabled' => true],
                         'dynamic'           => true,
                         'dynamic_templates' => [
+                            [
+                                'chs' => [
+                                    'match_mapping_type' => 'string',
+                                    'match'              => '*chs',
+                                    'mapping'            => ElasticMapping::CHINESE
+                                ],
+                            ],
                             [
                                 'names' => [
                                     'match_mapping_type' => 'string',

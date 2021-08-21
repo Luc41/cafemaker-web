@@ -153,7 +153,7 @@ class Search
 
             case SearchRequest::STRING_MULTI_MATCH:
                 $this->query->queryMultiMatch(
-                    [explode(',', $req->stringColumn)],
+                    explode(',', $req->stringColumn),
                     $req->string
                 );
                 break;
