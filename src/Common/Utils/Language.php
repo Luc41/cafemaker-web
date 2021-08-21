@@ -10,16 +10,17 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Language
 {
-    const DEFAULT = 'en';
+    const DEFAULT = 'chs';
     const LANGUAGES = [
+        'chs',
         'en',
         'de',
         'fr',
         'ja',
         'kr',
-        'cn'
     ];
     const LANGUAGES_ACTIVE = [
+        'chs',
         'en',
         'de',
         'fr',

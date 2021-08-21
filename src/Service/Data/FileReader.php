@@ -34,7 +34,7 @@ class FileReader extends DataHelper
         $filenameList = new \stdClass();
 
         // build a list of multi-language filenames
-        foreach (['en', 'de', 'fr', 'ja','chs'] as $language) {
+        foreach (['en', 'de', 'fr', 'ja', 'chs'] as $language) {
             $filenameList->{$language} = sprintf($filenameStructure, $filename, $language);
         }
 
