@@ -2,17 +2,19 @@
 # xivapi
 #
 server {
-    server_name
-        xivapi.local
-        staging.xivapi.local;
-
+    server_name xivapi.local staging.xivapi.local;
     listen 80;
     root /vagrant/public;
     include /etc/nginx/sites-available/common;
 }
 
-server {
-    server_name mogboard.local;
-    root /vagrant/sites/mogboard/public;
+#
+# adminer
+#
+server
+{
+    server_name xivapi.sql;
+    listen 80;
+    root /vagrant/public;
     include /etc/nginx/sites-available/common;
 }

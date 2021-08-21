@@ -5,6 +5,8 @@ src/Service/Common/Statistics\.php\.log
 exceptions\.log
 vm/ssh\.exe\.stackdump
 SaintCoinach\.Cmd\.lnk
+api_logs.txt
+public/fc/*
 
 /data
 !/data/.gitkeep
@@ -58,3 +60,4 @@ yarn-error.log
 .phpunit
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+bfg.jar

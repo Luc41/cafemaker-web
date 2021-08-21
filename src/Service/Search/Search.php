@@ -76,7 +76,8 @@ class Search
         //
         if ($req->limit > 0) {
             $this->query->limit(
-                $req->limitStart, $req->limit
+                $req->limitStart,
+                $req->limit
             );
         }
 
@@ -152,7 +153,8 @@ class Search
 
             case SearchRequest::STRING_MULTI_MATCH:
                 $this->query->queryMultiMatch(
-                    [explode(',', $req->stringColumn)], $req->string
+                    [explode(',', $req->stringColumn)],
+                    $req->string
                 );
                 break;
 
@@ -173,6 +175,10 @@ class Search
     {
         $this->connect();
 
+        if ($searchRequest->excludeDated) {
+            $this->query->excludeDated();
+        }
+
         if (!$searchRequest->filters) {
             return;
         }
@@ -180,14 +186,14 @@ class Search
         $filters = str_getcsv($searchRequest->filters);
 
         foreach ($filters as $filter) {
-            preg_match('/(?P<column>[A-Za-z0-9_\.]+)(?P<op>(?:=|[<\|>]=?))\[?(?P<value>[\w\;]+)\]?/', $filter, $matches);
+            preg_match('/(?P<column>[A-Za-z0-9_\.]+)(?P<op>(?:=|[<\|>\!]=?[\!]?))\[?(?P<value>[\w\;]*)\]?/', $filter, $matches);
 
             $column = $matches['column'] ?? null;
             $op     = $matches['op'] ?? null;
             $value  = $matches['value'] ?? null;
 
             if (!$column || !$op) {
-                throw new \Exception("Invalid search filter: {$filter} - It must be: [COLUMN][OPERATOR][VALUE]");
+                throw new \Exception("Invalid search filter: {$filter} - It must be: [COLUMN][OPERATOR][VALUE]", 400);
             }
 
             if (in_array($op, ['='])) {
@@ -203,8 +209,12 @@ class Search
                 $this->query->filterRange($column, (int)$value, $opConversion[$op]);
             } else if (in_array($op, ['|='])) {
                 $this->query->filterTerms($column, explode(';', $value));
+            } else if (in_array($op, ['!'])) {
+                $this->query->mustHaveColumn($column);
+            } else if (in_array($op, ['!!'])) {
+                $this->query->excludeColumn($column);
             } else {
-                throw new \Exception("Invalid operand provided: {$op}, please provide either: >, >=, <, <=, |=, or =");
+                throw new \Exception("Invalid operand provided: {$op}, please provide either: >, >=, <, <=, |=, =, !! or !", 400);
             }
         }
     }

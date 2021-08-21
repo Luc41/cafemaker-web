@@ -13,6 +13,10 @@
         dates. Character friends, their free company, pvp team and much more!
     </p>
 
+    <br>
+
+    {{ docs.lodestoneErrors() }}
+
     <br><br>
 
     {# Search #}
@@ -47,7 +51,7 @@
             <td>data</td>
             <td>
 
-                <p>By default only the `Character` data will return, you can request more data using the `data` query.</p>
+                <p>By default the `Character`, `ClassJobs`, `Minion` and `Mount` data will return, you can request more data using the `data` query.</p>
 
                 <h6>data</h6>
                 <code>
@@ -63,10 +67,6 @@
                         <td>Achievements</td>
                     </tr>
                     <tr>
-                        <td>MIMO</td>
-                        <td>Minions & Mounts</td>
-                    </tr>
-                    <tr>
                         <td>FR</td>
                         <td>Friends List</td>
                     </tr>
@@ -77,6 +77,10 @@
                     <tr>
                         <td>FCM</td>
                         <td>Free Company Members</td>
+                    </tr>
+                    <tr>
+                        <td>MIMO</td>
+                        <td>Mounts & Minions</td>
                     </tr>
                     <tr>
                         <td>PVP</td>

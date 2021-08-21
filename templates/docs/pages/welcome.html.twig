@@ -8,8 +8,8 @@
     <p>
         XIVAPI provides a massive amount of FINAL FANTASY XIV game data in a JSON format via
         a REST API. You can fetch information on all sorts of game content that has been discovered and
-        mapped in the SaintCoinach Schema. In addition it provides Character, Free Company, Linkshell, PvPTeams,
-        Lodestone and Market Board information!
+        mapped in the SaintCoinach Schema. It also provides Character, Free Company, Linkshell,
+        and PVP Team information from the Lodestone!
     </p>
 
     <h2 id="discord">Discord</h2>
@@ -27,9 +27,7 @@
 
     <h1 id="patreon">Patreon Support!</h1>
     <p>
-        By contributing a small amount every month you support development on <strong>XIVAPI</strong> and <strong>Mogboard.com</strong>
-        - You'll receive perks for both sites, recognition on discord and appreciation from the devs heart!
-        If you want to know how much things cost; <a href="{{ path('docs_page', { page: 'Costs' }) }}">view the live pricing</a> page.
+        By contributing a small amount every month you support development on <strong>XIVAPI</strong>, recognition on discord and appreciation from the devs heart!
     </p>
     <p>
         <a href="https://www.patreon.com/bePatron?u=13230932" target="_blank">
@@ -68,7 +66,7 @@
     {# Keeping up to date #}
     <h1 id="update">Keeping up to date</h1>
     <p>
-        The API is driven directly from the game files. All the data you found is 99% raw data, unmodified
+        The API is driven directly from the game files. All the data found is 99% raw data, unmodified
         from the game source. Custom changes are very limited. It is important to remember that the structure
         or even the location of data can change anytime there is an FFXIV Patch
     </p>
@@ -112,13 +110,16 @@
                 <td>{{ max_rate_limit_key }} / req / sec (*)</td>
                 <td>{{ max_rate_limit_global }} / req / sec</td>
             </tr>
+            <tr>
+                <td colspan="2">Lodestone endpoints are limited to 1/second. Lodestone has its own rate limit that is out of XIVAPI's control, you can read more about that on their relative documentation pages.</td>
+            </tr>
         </tbody>
     </table>
     <small>
         * Accounts have individually set rate limits and may change based on usage or requirements.
     </small>
 
-    <p class="note">
+    <div class="note">
         <strong>Due Diligence</strong>
         <br>
         Just because you can hit the API for X requests a second every second of the day; does not mean
@@ -127,13 +128,26 @@
         about your usage and consider how often you really need to hit the site as well as if it's
         possible to cache/preload data.
         <br><br>
-        Game Content is very static and real-time data (eg Market/Characters) have a cache layers that
-        update in the background. Be wise with regards to your usage.
-    </p>
+        Game Content is very static and real-time data (e.g. Characters) makes requests directly to the Lodestone.
+        Be wise with regards to your usage.
+    </div>
 
-    <small>
-        <strong>Note:</strong> XIVAPI does not keep a record of IPs and usage of them are SHA1 hashed in memory.
-    </small>
+    <br/>
+
+    <div class="note">
+        <h6>Automated Bans Notice</h6>
+
+        XIVAPI will automatically ban request sources if they reach a high threshold. This lasts for 1 hour, this is very obvious
+        to the creators of the API so if you hit this, know we're watching and we may perma ban either a request source or API key.
+
+        <br/><br/>
+
+        <small style="margin-bottom: 0;">
+            <strong>Note:</strong> XIVAPI does not keep a record of IPs and usage of them are SHA1 hashed in memory.
+        </small>
+    </div>
+
+
 
     <p>
         If you use an API key then the request IP is no longer factored into rate limit checks.

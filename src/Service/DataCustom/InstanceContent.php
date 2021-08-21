@@ -36,7 +36,7 @@ class InstanceContent extends ManualHelper
                 continue;
             }
 
-            $id   = $cfc->Content;
+            $id   = $cfc->ContentTargetID;
             $type = self::CONTENT_LINK_TYPES[$cfc->ContentLinkType];
 
             $this->contentFinderConditions[$type][$id] = $cfc;
@@ -85,11 +85,18 @@ class InstanceContent extends ManualHelper
 
         // Descriptions
         $descriptions = Redis::Cache()->get("xiv_ContentFinderConditionTransient_{$instanceContent->ContentFinderCondition->ID}");
-        $instanceContent->Description_chs = $descriptions->Description_chs ?? NULL;
-        $instanceContent->Description_en = $descriptions->Description_en ?? NULL;
-        $instanceContent->Description_ja = $descriptions->Description_ja ?? NULL;
-        $instanceContent->Description_de = $descriptions->Description_de ?? NULL;
-        $instanceContent->Description_fr = $descriptions->Description_fr ?? NULL;
+        $instanceContent->Description_chs = $descriptions->Description_chs;
+        $instanceContent->Description_en = $descriptions->Description_en;
+        $instanceContent->Description_ja = $descriptions->Description_ja;
+        $instanceContent->Description_de = $descriptions->Description_de;
+        $instanceContent->Description_fr = $descriptions->Description_fr;
+
+        // Names
+        $instanceContent->Name_chs = $instanceContent->ContentFinderCondition->Name_chs;
+        $instanceContent->Name_en = $instanceContent->ContentFinderCondition->Name_en;
+        $instanceContent->Name_ja = $instanceContent->ContentFinderCondition->Name_ja;
+        $instanceContent->Name_de = $instanceContent->ContentFinderCondition->Name_de;
+        $instanceContent->Name_fr = $instanceContent->ContentFinderCondition->Name_fr;
         
         // Content Member Type
         $instanceContent->ContentMemberType = $instanceContent->ContentFinderCondition->ContentMemberType;
