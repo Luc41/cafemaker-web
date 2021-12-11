@@ -14,7 +14,7 @@ class HomeController extends AbstractController
      */
     public function home()
     {
-        return $this->redirect('https://ainou.plus/cafemaker-home', 302);
+        return $this->redirect('https://urn.cx/cafemaker-home', 302);
     }
     
     /**
@@ -30,7 +30,7 @@ class HomeController extends AbstractController
      */
     public function discord()
     {
-        return $this->redirect('https://ainou.plus/cafemaker-discord', 302);
+        return $this->redirect('https://urn.cx/cafemaker-discord', 302);
     }
     
     /**
