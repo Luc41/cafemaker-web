@@ -34,6 +34,8 @@ class SaintCoinachRedisCommand extends Command
         'Cabinet',
         'World',
         'RecipeNotebookList',
+        'SpearFishingNotebook',
+        'RetainerTaskParameter'
     ];
 
     /** @var Patch */
@@ -55,7 +57,6 @@ class SaintCoinachRedisCommand extends Command
             ->addOption('start', null, InputOption::VALUE_OPTIONAL, 'The required starting position for the data', 0)
             ->addOption('count', null, InputOption::VALUE_OPTIONAL, 'The amount of files to process in 1 go', 1000)
             ->addOption('fast', null, InputOption::VALUE_OPTIONAL, 'Skip all questions and use default values', true)
-            ->addOption('full', null, InputOption::VALUE_OPTIONAL, 'Perform a full import, regardless of existing entries', false)
             ->addOption('content', null, InputOption::VALUE_OPTIONAL, 'Forced content name', null)
             ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'Forced content name', null);
     }
@@ -93,7 +94,6 @@ class SaintCoinachRedisCommand extends Command
     {
         $focusName  = $this->input->getOption('content');
         $focusId    = $this->input->getOption('id');
-        $isFullRun  = $this->input->getOption('full');
         $quiet  = $this->input->getOption('quiet');
 
         if ($focusName || $focusId) {
@@ -179,12 +179,8 @@ class SaintCoinachRedisCommand extends Command
                     $this->io->writeln("Skipping focus id: {$focusId}");
                     continue;
                 }
-
-                // if this is a full run or this ID is not in our current saved, then process it.
-                if ($isFullRun == true || in_array($contentId, $currentIds) === false) {
                     // build the game content
                     $this->buildContent($contentId, $contentName, $contentSchema, clone $contentData, 0, true);
-                }
 
                 // store the content ids
                 $this->saveContentId($contentId, $contentName);
@@ -472,7 +468,7 @@ class SaintCoinachRedisCommand extends Command
             }
 
             // grab linked data
-            $linkData = $this->linkContent($linkId, $linkTarget, ($contentName == $linkTarget) ? 99 : $depth);
+            $linkData = $this->linkContent($linkId, $linkTarget, ($contentName == $linkTarget) ? 99 : $depth, $contentId, $contentName, $definition);
 
             // append on linked data if it exists
             $content->{$definition->name} = $linkData ?: $content->{$definition->name};
@@ -488,6 +484,11 @@ class SaintCoinachRedisCommand extends Command
 
         // handle link type definition
         if (isset($definition->converter) && $definition->converter->type == 'multiref') {
+
+            // We don't have to link for TopicSelect because it'll break data
+            if ($contentName === 'TopicSelect') {
+                return $content;
+            }
             // id of linked data
             $linkId = $content->{$definition->name} ?? null;
 
@@ -495,7 +496,7 @@ class SaintCoinachRedisCommand extends Command
             $possibleTargets = $definition->converter->targets;
 
             foreach ($possibleTargets as $possibleTarget) {
-                $linkData = $this->linkContent($linkId, $possibleTarget, ($contentName == $possibleTarget) ? 99 : $depth);
+                $linkData = $this->linkContent($linkId, $possibleTarget, ($contentName == $possibleTarget) ? 99 : $depth, $contentId, $contentName, $definition);
                 // If content is not null, then we got the multiref target that's mathing this value
                 if (!is_null($linkData)) {
 
@@ -563,11 +564,9 @@ class SaintCoinachRedisCommand extends Command
                     $matches = $matches || (isset($content->{$link->when->key}) && $content->{$link->when->key} == $link->when->value);
                 }
                 if ($matches) {
-                    $linkData = $this->linkContent($linkId, $link->sheet, ($contentName == $link->sheet) ? 99 : $depth);
-                    if (!isset($linkData)) {
-                    }
+                    $linkData = $this->linkContent($linkId, $link->sheet, ($contentName == $link->sheet) ? 99 : $depth, $contentId, $contentName, $definition);
                     // add link target and target id
-                    $content->{$definition->name} = null;
+                    $content->{$definition->name} = $linkData;
                     $content->{$definition->name . "Target"} = $link->sheet;
                     $content->{$definition->name . "TargetID"} = $linkId;
 
@@ -618,7 +617,7 @@ class SaintCoinachRedisCommand extends Command
     /**
      * Link content
      */
-    private function linkContent($linkId, $linkTarget, $depth)
+    private function linkContent($linkId, $linkTarget, $depth, $contentId, $contentName, $definition)
     {
         // linkId is 0 and linkTarget is not in our zero content list
         if ($linkId == 0 && in_array($linkTarget, self::ZERO_CONTENT) == false) {
@@ -630,7 +629,7 @@ class SaintCoinachRedisCommand extends Command
 
         // no content? try array
         if (!$targetContent) {
-            return $this->linkContentArray($linkId, $linkTarget, $depth);
+            return $this->linkContentArray($linkId, $linkTarget, $depth, $contentId, $contentName, $definition);
         }
 
         // if no schema, return just the value
@@ -644,7 +643,7 @@ class SaintCoinachRedisCommand extends Command
     /**
      * Link content Array (for links like ID:4 and sheet has 4.0, 4.1, 4.2, etc)
      */
-    private function linkContentArray($linkId, $linkTarget, $depth)
+    private function linkContentArray($linkId, $linkTarget, $depth, $contentId, $contentName, $definition)
     {
         // linkId is 0 and linkTarget is not in our zero content list
         if ($linkId == 0 && in_array($linkTarget, self::ZERO_CONTENT) == false) {
@@ -656,13 +655,14 @@ class SaintCoinachRedisCommand extends Command
         $subIndex = 0;
         $el = FileSystemCache::get($linkTarget, $linkId . '.' .  $subIndex);
         while (isset($el)) {
+            $this->saveConnection($contentId, $contentName, $definition->name, $linkId, $linkTarget);
             if (!$targetSchema) {
                 $targetContent[] = $el;
             } else {
                 $targetContent[] = $this->buildContent($linkId, $linkTarget, $targetSchema, clone $el, $depth);
             }
             $subIndex++;
-            $el = FileSystemCache::get($linkTarget, $linkId . $subIndex);
+            $el = FileSystemCache::get($linkTarget, $linkId . '.' . $subIndex);
         }
 
         // no content? return null
