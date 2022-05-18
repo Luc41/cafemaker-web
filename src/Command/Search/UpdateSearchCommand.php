@@ -72,11 +72,24 @@ class UpdateSearchCommand extends Command
 
                 $this->io->text("<info>ElasticSearch import: {$total} {$contentName} documents to index: {$index}</info>");
 
-                    // delete index for a clean slate
-                    $elastic->deleteIndex($index);
+                while (true) {
+                    try {
+                        // delete index for a clean slate
+                        $elastic->deleteIndex($index);
 
-                    // create index
-                    $elastic->addIndexGameData($index);
+                        sleep(10);
+    
+                        // create index
+                        $elastic->addIndexGameData($index);
+
+                        break;
+                    } catch (\Exception $ex) {
+                        print_r($ex->getMessage());
+                        sleep(30);
+                        echo "Retrying ...";
+                        continue;
+                    }
+                }
 
                 // temporarily -1 the refresh interval for this index
                 $elastic->putSettings([
